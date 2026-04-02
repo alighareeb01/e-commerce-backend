@@ -16,7 +16,7 @@ export const authSignUp = async (req, res) => {
 
   let avatarPath = "";
   if (req.file) {
-    avatarPath = `http://localhost:3000/uploads/${req.file.originalname}`;
+    avatarPath = `http://localhost:3000/uploads/${req.file.filename}`;
   }
   console.log(avatarPath);
 

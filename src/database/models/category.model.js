@@ -2,11 +2,11 @@ import mongoose from "mongoose";
 
 const categorySchema = new mongoose.Schema(
   {
-    categoryName: {
+    name: {
       type: String,
       required: true,
     },
-    categoryDescription: {
+    description: {
       type: String,
       required: true,
     },
@@ -23,7 +23,19 @@ const categorySchema = new mongoose.Schema(
     },
     isActive: {
       type: Boolean,
+      default: true,
     },
   },
   { timestamps: true },
 );
+categorySchema.virtual("subcategories", {
+  ref: "subCategories",
+  localField: "_id",
+  foreignField: "categoryId",
+  match: { isDeleted: false },
+});
+
+categorySchema.set("toJSON", { virtuals: true });
+categorySchema.set("toObject", { virtuals: true });
+
+export const categoriesModel = mongoose.model("categories", categorySchema);

@@ -31,9 +31,9 @@ export const auth = (req, res, next) => {
 };
 
 export const checkRole = (role) => (req, res, next) => {
-  if (!req.user) return res.json({ message: unauthorized });
+  if (!req.user) return res.json({ message: "unauthorized" });
 
-  if (req.role !== role) {
+  if (req.user.role !== role) {
     return res.json("you must be and admin or staff");
   }
   next();
