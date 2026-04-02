@@ -23,7 +23,7 @@ export const userUpdateProfile = async (req, res) => {
   //     if (req.file)
 
   if (req.file) {
-    user.avatar = `http://localhost:3000/uploads/${req.file.originalname}`;
+    user.avatar = `http://localhost:3000/uploads/${req.file.filename}`;
   }
 
   if (name) user.name = name;
@@ -53,7 +53,7 @@ export const userUploadAvatar = async (req, res) => {
     return res.status(404).json({ message: "no avatar found" });
   }
   if (req.file) {
-    user.avatar = `http://localhost:3000/uploads/${req.file.originalname}`;
+    user.avatar = `http://localhost:3000/uploads/${req.file.filename}`;
   }
   await user.save();
 
