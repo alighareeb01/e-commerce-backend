@@ -1,12 +1,13 @@
 import Joi from "joi";
 
-const addOrderScehma = Joi.object({
-  user: Joi.string().required(),
-  product: Joi.string().required(),
-  quantity: Joi.number().required().min(1),
-  price: Joi.number().required().min(0),
-  paymentMethod: Joi.string().required().default("cod"),
-  paymentStatus: Joi.string().required().default("pending"),
-  orderStatus: Joi.string().required().default("pending"),
-  shippingAddress: Joi.object().required(),
+export const addOrderScehma = Joi.object({
+  paymentMethod: Joi.string().required().valid("cod", "card"),
+
+  shippingAddress: Joi.object({
+    fullName: Joi.string().min(3).max(100).required(),
+    phone: Joi.string().required(),
+    street: Joi.string().min(3).max(200).required(),
+    city: Joi.string().min(2).max(100).required(),
+    country: Joi.string().min(2).max(100).required(),
+  }).required(),
 });
