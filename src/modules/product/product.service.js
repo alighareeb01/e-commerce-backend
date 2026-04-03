@@ -139,7 +139,7 @@ export const updateStockQuantity = async (req, res) => {
 
 export const getAllActiveProducts = async (req, res) => {
   const products = await productsModel
-    .find({ isDeleted: false, isActive: true })
+    .find({ isDeleted: false, isDeleted: false })
     .populate("category")
     .populate("subcategory")
     .select("-createdAt -updatedAt -__v -deletedAt");
