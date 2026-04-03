@@ -1,8 +1,9 @@
 import mongoose from "mongoose";
+import { env } from "../../config/env.service.js";
 
 export const databaseConnection = () => {
   mongoose
-    .connect("mongodb://localhost:27017/e-commerce")
+    .connect(`${env.MONGO_URI}`)
     .then(() => {
       console.log("database connected successfully");
     })

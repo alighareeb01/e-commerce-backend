@@ -7,6 +7,7 @@ import subCategoryRouter from "./modules/subcategory/subcategory.controller.js";
 import productRouter from "./modules/product/product.controller.js";
 import cartRouter from "./modules/cart/cart.controller.js";
 import orderRouter from "./modules/order/order.controller.js";
+import { env } from "../config/env.service.js";
 
 export const bootstrap = () => {
   const app = express();
@@ -23,7 +24,7 @@ export const bootstrap = () => {
   app.use("/api/v1", orderRouter);
   app.use("/uploads", express.static("uploads"));
 
-  app.listen(3000, () => {
-    console.log("serever is running on port 3000");
+  app.listen(env.PORT, () => {
+    console.log(`serever is running on port ${env.port}`);
   });
 };

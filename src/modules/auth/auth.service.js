@@ -2,6 +2,7 @@ import jwt from "jsonwebtoken";
 import { userModel } from "./../../database/models/user.model.js";
 import bcrypt from "bcrypt";
 import { sendEmail } from "../../common/email/sendEmail.js";
+import { env } from "../../../config/env.service.js";
 export const authSignUp = async (req, res) => {
   try {
     const { name, email, password, confirmPassword, phone } = req.body;
@@ -30,7 +31,7 @@ export const authSignUp = async (req, res) => {
 
     let token = jwt.sign(
       { _id: userAdded._id, role: userAdded.role },
-      "verify",
+      env.JWT_VERIFY_SECRET,
       {
         expiresIn: "20m",
       },
@@ -80,16 +81,16 @@ export const authLogin = async (req, res) => {
 
     switch (user.role) {
       case "admin":
-        signature = "admin";
+        signature = env.JWT_ADMIN_SECRET;
         break;
       case "user":
-        signature = "user";
+        signature = env.JWT_USER_SECRET;
         break;
       case "staff":
-        signature = "staff";
+        signature = env.JWT_STAFF_SECRET;
         break;
       default:
-        signature = "user";
+        signature = env.JWT_USER_SECRET;
         break;
     }
 
@@ -120,7 +121,7 @@ export const authVerifyEmail = async (req, res) => {
 
     let decoded;
     try {
-      decoded = jwt.verify(token, "verify");
+      decoded = jwt.verify(token, env.JWT_VERIFY_SECRET);
     } catch (err) {
       return res.status(400).json({ message: " tokenexpired " });
     }
@@ -155,9 +156,13 @@ export const authResendVerification = async (req, res) => {
     if (user.isVerified == true)
       return res.status(401).json({ message: "already verified" });
 
-    let token = jwt.sign({ _id: user._id, role: user.role }, "verify", {
-      expiresIn: "10m",
-    });
+    let token = jwt.sign(
+      { _id: user._id, role: user.role },
+      env.JWT_VERIFY_SECRET,
+      {
+        expiresIn: "10m",
+      },
+    );
 
     let verifyLink = `  <button>
       
@@ -183,9 +188,13 @@ export const authForgotPassword = async (req, res) => {
     const user = await userModel.findOne({ email });
     if (!user) return res.status(401).json({ message: "user not found" });
 
-    let token = jwt.sign({ _id: user._id, role: user.role }, "resetPassword", {
-      expiresIn: "10m",
-    });
+    let token = jwt.sign(
+      { _id: user._id, role: user.role },
+      env.JWT_RESET_PASSWORD_SECRET,
+      {
+        expiresIn: "10m",
+      },
+    );
 
     let verifyLink = `  <button>
       
@@ -212,7 +221,7 @@ export const authResetPassword = async (req, res) => {
     }
     let decoded;
     try {
-      decoded = jwt.verify(token, "resetPassword");
+      decoded = jwt.verify(token, env.JWT_RESET_PASSWORD_SECRET);
     } catch (err) {
       return res.status(400).json({ message: " tokenexpired " });
     }

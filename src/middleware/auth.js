@@ -1,4 +1,5 @@
 import jwt from "jsonwebtoken";
+import { env } from "../../config/env.service.js";
 
 export const auth = (req, res, next) => {
   const { autherization } = req.headers;
@@ -12,16 +13,16 @@ export const auth = (req, res, next) => {
 
   switch (bearer) {
     case "admin":
-      signature = "admin";
+      signature = env.JWT_ADMIN_SECRET;
       break;
     case "user":
-      signature = "user";
+      signature = env.JWT_USER_SECRET;
       break;
     case "staff":
-      signature = "staff";
+      signature = env.JWT_STAFF_SECRET;
       break;
     default:
-      signature = "user";
+      signature = env.JWT_USER_SECRET;
       break;
   }
   const decode = jwt.verify(token, signature);
