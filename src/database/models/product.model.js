@@ -42,10 +42,6 @@ const productSchema = new mongoose.Schema(
     autoDeletedAt: {
       type: Date,
     },
-    isActive: {
-      type: Boolean,
-      default: true,
-    },
   },
   { timestamps: true },
 );
