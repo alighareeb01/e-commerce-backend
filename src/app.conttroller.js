@@ -7,6 +7,7 @@ import subCategoryRouter from "./modules/subcategory/subcategory.controller.js";
 import productRouter from "./modules/product/product.controller.js";
 import cartRouter from "./modules/cart/cart.controller.js";
 import orderRouter from "./modules/order/order.controller.js";
+import staffRouter from "./modules/staff/staff.controller.js";
 import { env } from "../config/env.service.js";
 
 export const bootstrap = () => {
@@ -22,9 +23,10 @@ export const bootstrap = () => {
   app.use("/api/v1", productRouter);
   app.use("/api/v1/cart", cartRouter);
   app.use("/api/v1", orderRouter);
+  app.use("/api/v1/admin/staff", staffRouter);
   app.use("/uploads", express.static("uploads"));
 
   app.listen(env.PORT, () => {
-    console.log(`serever is running on port ${env.port}`);
+    console.log(`serever is running on port ${env.PORT}`);
   });
 };
