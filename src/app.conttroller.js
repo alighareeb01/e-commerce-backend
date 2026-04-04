@@ -27,6 +27,10 @@ export const bootstrap = () => {
   app.use("/api/v1/admin/staff", staffRouter);
   app.use("/api/v1/staff", attendanceRouter);
 
+  app.get("/", (req, res) => {
+    res.json("hi");
+  });
+
   app.use("/uploads", express.static("uploads"));
 
   app.listen(env.PORT, () => {

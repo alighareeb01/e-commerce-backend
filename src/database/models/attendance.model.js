@@ -4,10 +4,11 @@ const attendanceSchema = new mongoose.Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
-    required: true,
+    // required: true,
   },
   checkInTime: {
     type: Date,
+    default: null,
   },
 
   isLate: {
@@ -20,6 +21,7 @@ const attendanceSchema = new mongoose.Schema({
   },
   checkOutTime: {
     type: Date,
+    default: null,
   },
   workingHours: {
     type: Number,
@@ -35,3 +37,5 @@ const attendanceSchema = new mongoose.Schema({
     required: true,
   },
 });
+
+export const attendanceModel = mongoose.model("attendance", attendanceSchema);
