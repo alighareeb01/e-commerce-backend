@@ -5,6 +5,6 @@ import { checkIn, checkOut } from "./attendance.service.js";
 const router = express.Router();
 
 router.post("/checkin", auth, checkRole("staff"), checkIn);
-router.post("/checkin", auth, checkRole("staff"), checkOut);
+router.post("/checkout", auth, checkRole("staff"), checkOut);
 
 export default router;
