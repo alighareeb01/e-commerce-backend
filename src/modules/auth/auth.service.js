@@ -3,6 +3,7 @@ import { userModel } from "./../../database/models/user.model.js";
 import bcrypt from "bcrypt";
 import { sendEmail } from "../../common/email/sendEmail.js";
 import { env } from "../../../config/env.service.js";
+import { uploadImage } from "../../common/cloudinary/cloudinary.config.js";
 export const authSignUp = async (req, res) => {
   try {
     const { name, email, password, confirmPassword, phone } = req.body;
@@ -17,8 +18,12 @@ export const authSignUp = async (req, res) => {
     let hashed = await bcrypt.hash(password, 12);
 
     let avatarPath = "";
+
     if (req.file) {
-      avatarPath = `http://localhost:3000/uploads/${req.file.filename}`;
+      // avatarPath = `http://localhost:3000/uploads/${req.file.filename}`;
+      let result = await uploadImage(req.file.buffer);
+      // console.log(result);
+      avatarPath = result.secure_url;
     }
 
     let userAdded = await userModel.create({

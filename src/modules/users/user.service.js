@@ -1,3 +1,4 @@
+import { uploadImage } from "../../common/cloudinary/cloudinary.config.js";
 import { userModel } from "../../database/models/user.model.js";
 
 export const userGetProfile = async (req, res) => {
@@ -32,7 +33,10 @@ export const userUpdateProfile = async (req, res) => {
     //     if (req.file)
 
     if (req.file) {
-      user.avatar = `http://localhost:3000/uploads/${req.file.filename}`;
+      let result = await uploadImage(req.file.buffer);
+      // console.log(result);
+      user.avatar = result.secure_url;
+      // user.avatar = `http://localhost:3000/uploads/${req.file.filename}`;
     }
 
     if (name) user.name = name;
@@ -78,7 +82,10 @@ export const userUploadAvatar = async (req, res) => {
       return res.status(404).json({ message: "no avatar found" });
     }
     if (req.file) {
-      user.avatar = `http://localhost:3000/uploads/${req.file.filename}`;
+      let result = await uploadImage(req.file.buffer);
+      // console.log(result);
+      user.avatar = result.secure_url;
+      // user.avatar = `http://localhost:3000/uploads/${req.file.filename}`;
     }
     await user.save();
 
