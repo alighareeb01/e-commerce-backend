@@ -12,6 +12,7 @@ import attendanceRouter from "./modules/attendance/attendance.controller.js";
 import deductionRouter from "./modules/deduction/deduction.controller.js";
 import salaryRouter from "./modules/salary/salary.controller.js";
 import { env } from "../config/env.service.js";
+import { socketSetup } from "./socket/socekt.setup.js";
 
 export const bootstrap = () => {
   const app = express();
@@ -36,4 +37,6 @@ export const bootstrap = () => {
   app.listen(env.PORT, () => {
     console.log(`serever is running on port ${env.PORT}`);
   });
+
+  socketSetup(3001);
 };
