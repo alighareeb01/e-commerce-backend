@@ -41,8 +41,12 @@ const staffSchema = new mongoose.Schema(
         },
         finalSalary: {
           type: Number,
-          min: 0,
+
           required: true,
+        },
+        adjustments: {
+          type: Number,
+          default: 0,
         },
         isPaid: {
           type: Boolean,

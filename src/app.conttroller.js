@@ -11,6 +11,7 @@ import orderRouter from "./modules/order/order.controller.js";
 import staffRouter from "./modules/staff/staff.controller.js";
 import attendanceRouter from "./modules/attendance/attendance.controller.js";
 import deductionRouter from "./modules/deduction/deduction.controller.js";
+import salaryRouter from "./modules/salary/salary.controller.js";
 
 export const bootstrap = () => {
   const app = express();
@@ -28,6 +29,7 @@ export const bootstrap = () => {
   app.use("/api/v1/admin/staff", staffRouter);
   app.use("/api/v1/staff", attendanceRouter);
   app.use("/api/v1/admin/staff", deductionRouter);
+  app.use("/api/v1/admin/staff", salaryRouter);
 
   app.get("/", (req, res) => {
     res.json("hi");
