@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Socket Auth Test</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 520px;
+        margin: 40px auto;
+        padding: 0 16px;
+      }
+
+      input,
+      button {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 12px;
+        font: inherit;
+      }
+
+      .box {
+        border: 1px solid #ccc;
+        padding: 16px;
+      }
+
+      #logs {
+        padding-left: 18px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Socket Auth Test</h1>
+
+    <div class="box">
+      <input id="tokenInput" type="text" placeholder="Enter JWT token" />
+      <!-- <button id="connectBtn" type="button">Connect</button> -->
+      <button id="authBtn" type="button">authenitacate</button>
+      <p>Status: <span id="status">connected</span></p>
+      <p>Status: <span id="statusAuth">not authe</span></p>
+      <ul id="logs"></ul>
+    </div>
+    <div class="box">
+      <input id="message" type="text" placeholder="Enter msg" />
+      <input id="title" type="text" placeholder="Enter title" />
+      <input id="discount" type="text" placeholder="Enter discount" />
+      <button id="offerBtn" type="button" class="none">send offfer</button>
+
+      <p>Status: <span id="statusOffer">not authe</span></p>
+    </div>
+    <div id="renderr"></div>
+
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+    <script src="./index.js"></script>
+  </body>
+</html>
