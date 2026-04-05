@@ -1,3 +1,4 @@
+import { uploadImage } from "../../common/cloudinary/cloudinary.config.js";
 import { productsModel } from "../../database/models/product.model.js";
 
 export const addProduct = async (req, res) => {
@@ -9,13 +10,16 @@ export const addProduct = async (req, res) => {
     if (productFound)
       return res.status(409).json({ message: "product exists", productFound });
 
-    let imagePath;
     const imagesPaths = [];
-    if (req.files) {
-      req.files.forEach((el, index) => {
-        imagePath = `http://localhost:3000/uploads/${el.filename}`;
-        imagesPaths.push(imagePath);
-      });
+    if (req.files?.length) {
+      for (let i = 0; i < req.files.length; i++) {
+        const result = await uploadImage(req.files[i].buffer);
+        imagesPaths.push(result.secure_url);
+      }
+      // req.files.forEach((el, index) => {
+      //   imagePath = `http://localhost:3000/uploads/${el.filename}`;
+      //   imagesPaths.push(imagePath);
+      // });
     }
 
     const prouductObj = {
@@ -69,14 +73,14 @@ export const updateProduct = async (req, res) => {
       _id: { $ne: id },
     });
 
-    let imagePath;
     const imagesPaths = [];
-    if (req.files) {
-      req.files.forEach((el, index) => {
-        imagePath = `http://localhost:3000/uploads/${el.filename}`;
-        imagesPaths.push(imagePath);
-        product.images = imagesPaths;
-      });
+    if (req.files?.length) {
+      for (let i = 0; i < req.files.length; i++) {
+        const result = await uploadImage(req.files[i].buffer);
+        imagesPaths.push(result.secure_url);
+      }
+
+      product.images = imagesPaths;
     }
 
     if (name !== undefined) {

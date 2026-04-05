@@ -1,4 +1,4 @@
-import cloudinary from "cloudinary";
+import { v2 as cloudinary } from "cloudinary";
 import { env } from "../../../config/env.service.js";
 
 cloudinary.config({
@@ -10,21 +10,22 @@ cloudinary.config({
 /////////////////////////
 // Uploads an image file
 /////////////////////////
-export const uploadImage = async (imagePath) => {
-  // Use the uploaded file's name as the asset's public ID and
-  // allow overwriting the asset with new versions
-  const options = {
-    use_filename: true,
-    unique_filename: false,
-    overwrite: true,
-  };
 
-  try {
-    // Upload the image
-    const result = await cloudinary.uploader.upload(imagePath, options);
-    console.log(result);
-    return result;
-  } catch (error) {
-    console.error(error);
-  }
+export const uploadImage = (fileBuffer) => {
+  return new Promise((resolve, reject) => {
+    cloudinary.uploader
+      .upload_stream(
+        {
+          folder: "e-commerce",
+          resource_type: "image",
+        },
+        (error, result) => {
+          if (error) {
+            return reject(error);
+          }
+          resolve(result);
+        },
+      )
+      .end(fileBuffer);
+  });
 };

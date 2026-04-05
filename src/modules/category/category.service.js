@@ -1,3 +1,4 @@
+import { uploadImage } from "../../common/cloudinary/cloudinary.config.js";
 import { categoriesModel } from "../../database/models/category.model.js";
 import { userModel } from "../../database/models/user.model.js";
 
@@ -19,9 +20,12 @@ export const createCategory = async (req, res) => {
       description,
     };
 
-    let avatar;
+    let avatar = "";
     if (req.file) {
-      avatar = `http://localhost:3000/uploads/${req.file.filename}`;
+      //   avatar = `http://localhost:3000/uploads/${req.file.filename}`;
+      let result = await uploadImage(req.file.buffer);
+      // console.log(result);
+      avatar = result.secure_url;
     }
 
     let category = await categoriesModel.create({
@@ -65,7 +69,10 @@ export const updateCategory = async (req, res) => {
     if (isActive == false || isActive == true) category.isActive = isActive;
 
     if (req.file) {
-      category.avatar = `http://localhost:3000/uploads/${req.file.filename}`;
+      // category.avatar = `http://localhost:3000/uploads/${req.file.filename}`;
+      let result = await uploadImage(req.file.buffer);
+      // console.log(result);
+      category.avatar = result.secure_url;
     }
 
     await category.save();

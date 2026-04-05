@@ -11,7 +11,6 @@ import staffRouter from "./modules/staff/staff.controller.js";
 import attendanceRouter from "./modules/attendance/attendance.controller.js";
 import deductionRouter from "./modules/deduction/deduction.controller.js";
 import salaryRouter from "./modules/salary/salary.controller.js";
-import { uploadImage } from "./common/cloudinary/cloudinary.config.js";
 import { env } from "../config/env.service.js";
 
 export const bootstrap = () => {
@@ -32,7 +31,7 @@ export const bootstrap = () => {
   app.use("/api/v1/admin/staff", deductionRouter);
   app.use("/api/v1/admin/staff", salaryRouter);
 
-  app.use("/uploads", express.static("uploads"));
+  // app.use("/uploads", express.static("uploads"));
 
   app.listen(env.PORT, () => {
     console.log(`serever is running on port ${env.PORT}`);
