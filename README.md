@@ -8,7 +8,7 @@ This project combines three main domains in one backend system:
 - **HR Management System**
 - **Real-Time Notifications with Socket.io**
 
-The repository currently contains modules for auth, users, categories, subcategories, products, cart, orders, staff, attendance, deductions, salary, and socket setup, and the project uses `bcrypt`, `cloudinary`, `dotenv`, `express`, `joi`, `jsonwebtoken`, `mongoose`, `multer`, `nodemailer`, and `socket.io`. 0
+The repository currently contains modules for auth, users, categories, subcategories, products, cart, orders, staff, attendance, deductions, salary, and socket setup, and the project uses `bcrypt`, `cloudinary`, `dotenv`, `express`, `joi`, `jsonwebtoken`, `mongoose`, `multer`, `nodemailer`, and `socket.io`. 
 
 ---
 
@@ -26,7 +26,7 @@ This backend was developed to satisfy the exam requirements for:
 - salary and deduction calculations
 - real-time admin offers using Socket.io
 
-According to the exam PDF, the core project requires auth, users, categories, products, cart, orders, HR, and Socket.io, while **Stripe/card payment**, **ticket support**, and **Cypress testing** are bonus or extra-credit parts. 1 2
+According to the exam PDF, the core project requires auth, users, categories, products, cart, orders, HR, and Socket.io, while **Stripe/card payment**, **ticket support**, and **Cypress testing** are bonus or extra-credit parts. 
 
 ---
 
@@ -46,7 +46,7 @@ According to the exam PDF, the core project requires auth, users, categories, pr
 - Soft delete for user accounts
 - User avatar upload
 
-The exam requires signup, login, verify email, resend verification, forgot password, reset password, and profile APIs, which match the scope of this project. 3
+The exam requires signup, login, verify email, resend verification, forgot password, reset password, and profile APIs, which match the scope of this project. 
 
 ### 2) Category & Subcategory Management
 - Create category
@@ -59,7 +59,7 @@ The exam requires signup, login, verify email, resend verification, forgot passw
 - Get category subcategories
 - Get subcategory details
 
-These are part of the required e-commerce module in the exam specification. 4
+These are part of the required e-commerce module in the exam specification. 
 
 ### 3) Product Management
 - Add product
@@ -72,7 +72,7 @@ These are part of the required e-commerce module in the exam specification. 4
 - Filter by subcategory
 - Support filtering, sorting, and pagination
 
-The exam product module explicitly requires admin product CRUD, stock update, public product listing, and query support such as pagination and price filters. 5
+The exam product module explicitly requires admin product CRUD, stock update, public product listing, and query support such as pagination and price filters. 
 
 ### 4) Cart System
 - Add item to cart
@@ -81,7 +81,7 @@ The exam product module explicitly requires admin product CRUD, stock update, pu
 - Remove item from cart
 - Clear cart
 
-The exam requires product existence checks, stock validation, quantity updates, and cart total calculation. 6
+The exam requires product existence checks, stock validation, quantity updates, and cart total calculation. 
 
 ### 5) Order System
 - Checkout cart
@@ -91,7 +91,7 @@ The exam requires product existence checks, stock validation, quantity updates, 
 - Update order status as admin
 - Cash on Delivery checkout flow
 
-The exam makes **Cash on Delivery** the required payment method and treats **Visa/Card via Stripe** as a bonus implementation. 7
+The exam makes **Cash on Delivery** the required payment method and treats **Visa/Card via Stripe** as a bonus implementation. 
 
 ### 6) HR Management System
 - Staff management
@@ -102,7 +102,7 @@ The exam makes **Cash on Delivery** the required payment method and treats **Vis
 - Salary payment status update
 - Salary adjustment handling
 
-The exam includes staff APIs, attendance APIs, salary and deduction APIs, plus monthly salary calculation and payment marking. 8
+The exam includes staff APIs, attendance APIs, salary and deduction APIs, plus monthly salary calculation and payment marking. 
 
 ### 7) Real-Time Notifications
 - Socket.io setup
@@ -110,13 +110,13 @@ The exam includes staff APIs, attendance APIs, salary and deduction APIs, plus m
 - Authenticated user connections
 - Real-time delivery of offers to connected users
 
-The exam requires a simple admin broadcast system where authenticated admins can send offers and all connected users receive them instantly. 9
+The exam requires a simple admin broadcast system where authenticated admins can send offers and all connected users receive them instantly. 
 
 ### 8) Image Uploads
 - File upload handling with Multer
 - Cloud image hosting with Cloudinary
 
-The repo includes both `multer` and `cloudinary` in dependencies, and the exam lists Multer as required and cloud storage as bonus. 10 11 12
+The repo includes both `multer` and `cloudinary` in dependencies, and the exam lists Multer as required and cloud storage as bonus. 
 
 ---
 
@@ -128,7 +128,7 @@ The following parts from the exam are **not implemented in this repository**:
 - **Ticket Support System**
 - **Testing with Cypress**
 
-These are listed in the exam as bonus or extra-credit sections rather than core required sections. 13 14
+These are listed in the exam as bonus or extra-credit sections rather than core required sections.
 
 ---
 
@@ -141,4 +141,7 @@ These are listed in the exam as bonus or extra-credit sections rather than core 
 - **JWT**
 - **bcrypt**
 - **Joi**
-- **N
+- **Nodemailer**
+- **Multer**
+- **Cloudinary**
+- **Socket.io**
