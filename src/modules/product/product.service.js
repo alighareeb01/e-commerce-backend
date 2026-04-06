@@ -164,6 +164,7 @@ export const updateStockQuantity = async (req, res) => {
     if (Number(stock) === 0) {
       product.isDeleted = true;
       product.autoDeletedAt = new Date();
+
       res.json({ message: "stock is 0" });
     }
 
@@ -182,11 +183,68 @@ export const updateStockQuantity = async (req, res) => {
 
 export const getAllActiveProducts = async (req, res) => {
   try {
-    const products = await productsModel
-      .find({ isDeleted: false, isDeleted: false })
+    const queryObj = { ...req.query };
+    const excludedField = [
+      "page",
+      "sort",
+      "limit",
+      "fields",
+      "minPrice",
+      "maxPrice",
+    ];
+
+    excludedField.forEach((el) => delete queryObj[el]);
+
+    const filterObj = { ...queryObj, isDeleted: false };
+
+    const minPrice = Number(req.query.minPrice);
+    const maxPrice = Number(req.query.maxPrice);
+
+    if (!Number.isNaN(minPrice) || !Number.isNaN(maxPrice)) {
+      filterObj.price = {};
+
+      if (!Number.isNaN(minPrice)) filterObj.price.$gte = minPrice;
+      if (!Number.isNaN(maxPrice)) filterObj.price.$lte = maxPrice;
+    }
+
+    let query = productsModel
+      .find(filterObj)
       .populate("category")
       .populate("subcategory")
       .select("-createdAt -updatedAt -__v -deletedAt");
+
+    if (req.query.sort) {
+      const sortBy = req.query.sort.split(",");
+
+      // .join(" ");
+      console.log(typeof sortBy);
+
+      for (let i = 0; i < sortBy.length; i++) {
+        if (sortBy[i] == "price_asc") {
+          sortBy[i] = "price";
+        } else if (sortBy[i] == "price_dsc") {
+          sortBy[i] = "-price";
+        }
+      }
+
+      // console.log(sortBy);
+
+      query = query.sort(sortBy.join(" "));
+    }
+
+    const page = req.query.page * 1 || 1;
+    const limit = req.query.limit * 1 || 100;
+    const skip = (page - 1) * limit;
+
+    query = query.skip(skip).limit(limit);
+
+    const numOfProducts = await productsModel.countDocuments();
+    console.log(numOfProducts);
+
+    if (skip >= numOfProducts) {
+      throw new Error("page not exist");
+    }
+    const products = await query;
 
     if (products.length === 0)
       return res.status(400).json({ message: "no products found" });
@@ -226,10 +284,49 @@ export const filterByCategory = async (req, res) => {
   try {
     const { categoryId } = req.params;
 
-    const products = await productsModel
-      .find({ category: categoryId, isDeleted: false })
+    const queryObj = { ...req.query };
+
+    const excludedField = [
+      "page",
+      "sort",
+      "limit",
+      "fields",
+      "minPrice",
+      "maxPrice",
+    ];
+    excludedField.forEach((el) => delete queryObj[el]);
+    const filterObj = { ...queryObj, isDeleted: false, category: categoryId };
+
+    const minPrice = Number(req.query.minPrice);
+    const maxPrice = Number(req.query.maxPrice);
+
+    if (!Number.isNaN(minPrice) || !Number.isNaN(maxPrice)) {
+      filterObj.price = {};
+
+      if (!Number.isNaN(minPrice)) filterObj.price.$gte = minPrice;
+      if (!Number.isNaN(maxPrice)) filterObj.price.$lte = maxPrice;
+    }
+
+    let query = productsModel
+      .find(filterObj)
       .populate("category")
       .populate("subcategory");
+
+    const page = req.query.page * 1 || 1;
+    const limit = req.query.limit * 1 || 100;
+    const skip = (page - 1) * limit;
+
+    query = query.skip(skip).limit(limit);
+
+    const numOfProducts = await productsModel.countDocuments();
+    console.log(numOfProducts);
+
+    if (skip >= numOfProducts) {
+      throw new Error("page not exist");
+    }
+
+    const products = await query;
+
     return res.status(200).json({
       message: "products ",
 
@@ -247,9 +344,53 @@ export const filterBySubCategory = async (req, res) => {
   try {
     const { subcategoryId } = req.params;
 
-    const products = await productsModel
+    const queryOBj = [...req.query];
+
+    const excludedField = [
+      "page",
+      "sort",
+      "limit",
+      "fields",
+      "minPrice",
+      "maxPrice",
+    ];
+    excludedField.forEach((el) => delete queryOBj[el]);
+    const filterObj = {
+      ...queryOBj,
+      isDeleted: false,
+      subcategory: subcategoryId,
+    };
+
+    const minPrice = Number(req.query.minPrice);
+    const maxPrice = Number(req.query.maxPrice);
+
+    if (!Number.isNaN(minPrice) || !Number.isNaN(maxPrice)) {
+      filterObj.price = {};
+
+      if (!Number.isNaN(minPrice)) filterObj.price.$gte = minPrice;
+      if (!Number.isNaN(maxPrice)) filterObj.price.$lte = maxPrice;
+    }
+
+    let query = productsModel
+      .find(filterObj)
       .find({ subcategory: subcategoryId, isDeleted: false })
       .populate("subcategory");
+
+    const page = req.query.page * 1 || 1;
+    const limit = req.query.limit * 1 || 100;
+    const skip = (page - 1) * limit;
+
+    query = query.skip(skip).limit(limit);
+
+    const numOfProducts = await productsModel.countDocuments();
+    console.log(numOfProducts);
+
+    if (skip >= numOfProducts) {
+      throw new Error("page not exist");
+    }
+
+    const products = await query;
+
     return res.status(200).json({
       message: "products ",
 
