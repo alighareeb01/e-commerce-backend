@@ -1,5 +1,6 @@
 import express from "express";
 import morgan from "morgan";
+import cors from "cors";
 
 import authRouter from "./modules/auth/auth.controller.js";
 import userRouter from "./modules/users/user.controller.js";
@@ -17,6 +18,8 @@ import { appError } from "./common/utils/appError.js";
 import { globalErrorHandler } from "./middleware/globalErrorHandler.js";
 
 const app = express();
+
+app.use(cors());
 
 app.use(express.json());
 
