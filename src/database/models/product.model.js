@@ -6,10 +6,13 @@ const productSchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true,
+      trim: true,
+      minLength: [5, "name must be at least 5"],
     },
     description: {
       type: String,
       required: true,
+      minLength: [5, "desscription must be at least 5"],
     },
     price: {
       type: Number,

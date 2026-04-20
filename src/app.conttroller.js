@@ -13,13 +13,30 @@ import deductionRouter from "./modules/deduction/deduction.controller.js";
 import salaryRouter from "./modules/salary/salary.controller.js";
 import { env } from "../config/env.service.js";
 import { socketSetup } from "./socket/socekt.setup.js";
+import morgan from "morgan";
+import { appError } from "./common/utils/appError.js";
+import { globalErrorHandler } from "./middleware/globalErrorHandler.js";
 
 export const bootstrap = () => {
+  //handling UNCAUGHT EXCEPTIONS
+  process.on("uncaughtException", (err) => {
+    console.log("UNCAUGHT EXCEPTION ...🔥");
+    console.log(err.name);
+    console.log(err.message);
+
+    process.exit(1);
+  });
+
   const app = express();
   app.use(express.json());
 
   databaseConnection();
 
+  console.log(process.env.NODE_ENV);
+
+  if (process.env.NODE_ENV.trim() === "development") {
+    app.use(morgan("dev"));
+  }
   app.use("/api/v1/auth", authRouter);
   app.use("/api/v1/users", userRouter);
   app.use("/api/v1/categories", categoryRouter);
@@ -32,10 +49,27 @@ export const bootstrap = () => {
   app.use("/api/v1/admin/staff", deductionRouter);
   app.use("/api/v1/admin/staff", salaryRouter);
 
-  // app.use("/uploads", express.static("uploads"));
+  //MIDDLEWARE FOR WRONG ROUTES
+  app.all("/*splat", (req, res, next) => {
+    next(new appError(`can not find ${req.originalUrl} on this server`, 400));
+  });
 
-  app.listen(env.PORT, () => {
+  // Global HANDLE MIDDLEWARE
+  app.use(globalErrorHandler);
+
+  const server = app.listen(env.PORT, () => {
     console.log(`serever is running on port ${env.PORT}`);
+  });
+
+  // handling UNHANDLED REJECTION
+  process.on("unhandledRejection", (err) => {
+    console.log("UNHANDLED REJETION ...🔥");
+
+    console.log(err.name);
+    console.log(err.message);
+    server.close(() => {
+      process.exit(1);
+    });
   });
 
   socketSetup(3001);
