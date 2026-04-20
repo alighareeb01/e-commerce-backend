@@ -1,13 +1,18 @@
 import mongoose from "mongoose";
-import { env } from "../../config/env.service.js";
+import dotenv from "dotenv";
 
-export const databaseConnection = () => {
-  mongoose
-    .connect(`${env.MONGO_URI}`)
-    .then(() => {
-      console.log("database connected successfully");
-    })
-    .catch((err) => {
-      console.error(err);
-    });
+dotenv.config();
+
+export const databaseConnection = async () => {
+  try {
+    const DB = process.env.MONGO_URI.replace(
+      "<db_password>",
+      process.env.MONGO_PASSWORD,
+    );
+
+    await mongoose.connect(DB);
+    console.log("database connected successfully");
+  } catch (err) {
+    console.error("MongoDB connection error:", err.message);
+  }
 };
