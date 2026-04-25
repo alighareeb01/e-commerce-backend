@@ -19,10 +19,18 @@ import { globalErrorHandler } from "./middleware/globalErrorHandler.js";
 
 const app = express();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: "*",
+  }),
+);
 
 app.use(express.json());
 
+app.use(async (req, res, next) => {
+  await databaseConnection();
+  next();
+});
 if (process.env.NODE_ENV?.trim() === "development") {
   app.use(morgan("dev"));
 }
