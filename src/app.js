@@ -29,9 +29,14 @@ app.use(
 app.use(express.json());
 
 app.use(async (req, res, next) => {
-  await databaseConnection();
-  next();
+  try {
+    await databaseConnection();
+    next();
+  } catch (err) {
+    next(err);
+  }
 });
+
 if (process.env.NODE_ENV?.trim() === "development") {
   app.use(morgan("dev"));
 }
