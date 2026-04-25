@@ -12,6 +12,7 @@ import {
   authResendVerification,
   authForgotPassword,
   authResetPassword,
+  authSignUpAdmin,
 } from "./auth.service.js";
 
 const router = express.Router();
@@ -24,6 +25,15 @@ router.post(
   authSignUp,
 );
 router.post("/login", validation(loginSchema), authLogin);
+
+router.post(
+  "/signupAdmin",
+  upload().single("image"),
+  validation(signUpSchema),
+
+  authSignUpAdmin,
+);
+
 
 router.get("/verify-email/:token", authVerifyEmail);
 router.post("/resend-verification", authResendVerification);

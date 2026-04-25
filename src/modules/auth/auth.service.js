@@ -205,3 +205,56 @@ export const authResetPassword = catchAsync(async (req, res) => {
 
   res.status(200).json({ message: "password updated correctly" });
 });
+
+export const authSignUpAdmin = catchAsync(async (req, res) => {
+  const { name, email, password, confirmPassword, phone } = req.body;
+  const existUser = await userModel.findOne({ email });
+
+  if (existUser)
+    return res.status(409).json({ message: "email already exist" });
+
+  if (password != confirmPassword)
+    return res.status(400).json({ message: "passwords are not matched" });
+
+  let hashed = await bcrypt.hash(password, 12);
+
+  let avatarPath = "";
+
+  if (req.file) {
+    // avatarPath = `http://localhost:3000/uploads/${req.file.filename}`;
+    let result = await uploadImage(req.file.buffer);
+    // console.log(result);
+    avatarPath = result.secure_url;
+  }
+
+  const role = "admin";
+  let userAdded = await userModel.create({
+    name,
+    email,
+    password: hashed,
+    phone,
+    avatar: avatarPath,
+    role,
+  });
+
+  let token = jwt.sign(
+    { _id: userAdded._id, role: userAdded.role },
+    env.JWT_VERIFY_SECRET,
+    {
+      expiresIn: "20m",
+    },
+  );
+
+  let verifyLink = `  <button>
+      
+      <a href="http://localhost:3000/api/v1/auth/verify-email/${token}">verify your account</a>
+    </button>`;
+
+  await sendEmail(email, "verify Link", null, verifyLink);
+
+  if (!userAdded)
+    return res.status(400).json({ message: "something went wrong" });
+
+  res.status(201).json({ message: "user created successfully", userAdded });
+});
+
