@@ -12,13 +12,8 @@ if (!cached) {
 export const databaseConnection = async () => {
   if (cached.conn) return cached.conn;
 
-  const DB = process.env.MONGO_URI.replace(
-    "<db_password>",
-    process.env.MONGO_PASSWORD,
-  );
-
   if (!cached.promise) {
-    cached.promise = mongoose.connect(DB);
+    cached.promise = mongoose.connect(process.env.MONGO_URI);
   }
 
   cached.conn = await cached.promise;
