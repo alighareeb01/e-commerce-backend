@@ -21,6 +21,9 @@ export const auth = (req, res, next) => {
     case "staff":
       signature = env.JWT_STAFF_SECRET;
       break;
+    case "super-admin":
+      signature = env.JWT_SUPER_SECRET;
+      break;
     default:
       signature = env.JWT_USER_SECRET;
       break;
@@ -31,11 +34,15 @@ export const auth = (req, res, next) => {
   next();
 };
 
-export const checkRole = (role) => (req, res, next) => {
-  if (!req.user) return res.json({ message: "unauthorized" });
+export const checkRole = (...roles) => {
+  return (req, res, next) => {
+    if (!req.user) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
 
-  if (req.user.role !== role) {
-    return res.json("you must be and admin or staff");
-  }
-  next();
+    if (!roles.includes(req.user.role)) {
+      return res.status(403).json({ message: "Forbidden" });
+    }
+    next();
+  };
 };

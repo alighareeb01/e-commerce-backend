@@ -4,7 +4,7 @@ import { validation } from "../../common/utils/validataion.js";
 import { loginSchema, signUpSchema } from "./auth.validation.js";
 import { upload } from "../../middleware/multer.js";
 import { sendEmail } from "../../common/email/sendEmail.js";
-import { auth } from "../../middleware/auth.js";
+import { auth, checkRole } from "../../middleware/auth.js";
 import {
   authSignUp,
   authLogin,
@@ -27,7 +27,9 @@ router.post(
 router.post("/login", validation(loginSchema), authLogin);
 
 router.post(
-  "/signupAdmin",
+  "/signup-admin",
+  auth,
+  checkRole("super-admin"),
   upload().single("image"),
   validation(signUpSchema),
 
