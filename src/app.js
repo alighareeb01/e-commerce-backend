@@ -16,6 +16,7 @@ import salaryRouter from "./modules/salary/salary.controller.js";
 
 import { appError } from "./common/utils/appError.js";
 import { globalErrorHandler } from "./middleware/globalErrorHandler.js";
+import { databaseConnection } from "./database/connection.js";
 
 const app = express();
 
