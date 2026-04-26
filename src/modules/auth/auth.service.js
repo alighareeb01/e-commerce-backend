@@ -101,6 +101,7 @@ export const authLogin = catchAsync(async (req, res, next) => {
   });
 
   res.status(200).json({
+    status: "sucess",
     message: "logged successfull",
     accessToken: accessToken,
     refreshToken: refreshToken,
@@ -128,7 +129,7 @@ export const authVerifyEmail = catchAsync(async (req, res, next) => {
 
   await exist.save();
 
-  res.json({ message: "user verified successfully" });
+  res.json({ status: "sucess", message: "user verified successfully" });
 });
 
 export const authResendVerification = catchAsync(async (req, res, next) => {
@@ -177,7 +178,9 @@ export const authForgotPassword = catchAsync(async (req, res, next) => {
     </button>`;
 
   await sendEmail(email, "reseet your pasword", null, verifyLink);
-  return res.status(200).json({ message: "reset link sent successully" });
+  return res
+    .status(200)
+    .json({ status: "sucess", message: "reset link sent successully" });
 });
 
 export const authResetPassword = catchAsync(async (req, res, next) => {
@@ -204,18 +207,20 @@ export const authResetPassword = catchAsync(async (req, res, next) => {
   user.password = hashed;
   await user.save();
 
-  res.status(200).json({ message: "password updated correctly" });
+  res
+    .status(200)
+    .json({ status: "sucess", message: "password updated correctly" });
 });
 
 export const authSignUpAdmin = catchAsync(async (req, res, next) => {
   const { name, email, password, confirmPassword, phone } = req.body;
 
- if (!name) return next(new appError("name is required", 400));
- if (!email) return next(new appError("email is required", 400));
- if (!password) return next(new appError("password is required", 400));
- if (!confirmPassword)
-   return next(new appError("confirm password is required", 400));
- if (!phone) return next(new appError("phone is required", 400));
+  if (!name) return next(new appError("name is required", 400));
+  if (!email) return next(new appError("email is required", 400));
+  if (!password) return next(new appError("password is required", 400));
+  if (!confirmPassword)
+    return next(new appError("confirm password is required", 400));
+  if (!phone) return next(new appError("phone is required", 400));
 
   const existUser = await userModel.findOne({ email });
 
@@ -249,6 +254,7 @@ export const authSignUpAdmin = catchAsync(async (req, res, next) => {
   userAdded.password = undefined;
 
   res.status(201).json({
+    status: "sucess",
     message: "admin created successfully",
     userAdded,
   });
