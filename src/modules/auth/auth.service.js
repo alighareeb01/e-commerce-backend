@@ -5,16 +5,16 @@ import { sendEmail } from "../../common/email/sendEmail.js";
 import { env } from "../../../config/env.service.js";
 import { uploadImage } from "../../common/cloudinary/cloudinary.config.js";
 import { catchAsync } from "../../common/utils/catchAsync.js";
+import { appError } from "../../common/utils/appError.js";
 
-export const authSignUp = catchAsync(async (req, res) => {
+export const authSignUp = catchAsync(async (req, res, next) => {
   const { name, email, password, confirmPassword, phone } = req.body;
   const existUser = await userModel.findOne({ email });
 
-  if (existUser)
-    return res.status(409).json({ message: "email already exist" });
+  if (existUser) return next(new appError("email already exist", 409));
 
   if (password != confirmPassword)
-    return res.status(400).json({ message: "passwords are not matched" });
+    return next(new appError("passwords are not matched", 400));
 
   let hashed = await bcrypt.hash(password, 12);
 
@@ -50,30 +50,28 @@ export const authSignUp = catchAsync(async (req, res) => {
 
   await sendEmail(email, "verify Link", null, verifyLink);
 
-  if (!userAdded)
-    return res.status(400).json({ message: "something went wrong" });
+  if (!userAdded) return next(new appError("something went wrong", 400));
 
   res.status(201).json({ message: "user created successfully", userAdded });
 });
 
-export const authLogin = catchAsync(async (req, res) => {
+export const authLogin = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;
 
   const user = await userModel.findOne({ email });
-  if (!user) return res.status(401).json({ message: "user not found" });
+  if (!user) return next(new appError("user not found", 401));
 
   if (!user.isVerified) {
-    return res.status(401).json({ message: "verify your email first" });
+    return next(new appError("verify your email first", 401));
   }
 
   if (user.isDeleted) {
-    return res.status(403).json({ message: "this account has been deleted" });
+    return next(new appError("this account has been deleted", 403));
   }
 
   let encrypted = await bcrypt.compare(password, user.password);
 
-  if (!encrypted)
-    return res.status(401).json({ message: "incorrect password" });
+  if (!encrypted) return next(new appError("incorrect password", 401));
 
   let signature = "";
 
@@ -109,22 +107,22 @@ export const authLogin = catchAsync(async (req, res) => {
   });
 });
 
-export const authVerifyEmail = catchAsync(async (req, res) => {
+export const authVerifyEmail = catchAsync(async (req, res, next) => {
   const { token } = req.params;
 
   let decoded;
   try {
     decoded = jwt.verify(token, env.JWT_VERIFY_SECRET);
   } catch (err) {
-    return res.status(400).json({ message: " tokenexpired " });
+    return next(new appError("token expired", 400));
   }
 
   let exist = await userModel.findById(decoded._id);
 
-  if (!exist) return res.status(404).json({ message: "user not found" });
+  if (!exist) return next(new appError("user not found", 404));
 
   if (exist.isVerified == true)
-    return res.status(401).json({ message: "already verified" });
+    return next(new appError("already verified", 401));
 
   exist.isVerified = true;
 
@@ -133,13 +131,13 @@ export const authVerifyEmail = catchAsync(async (req, res) => {
   res.json({ message: "user verified successfully" });
 });
 
-export const authResendVerification = catchAsync(async (req, res) => {
+export const authResendVerification = catchAsync(async (req, res, next) => {
   const { email } = req.body;
   const user = await userModel.findOne({ email });
-  if (!user) return res.status(401).json({ message: "user not found" });
+  if (!user) return next(new appError("user not found", 401));
 
   if (user.isVerified == true)
-    return res.status(401).json({ message: "already verified" });
+    return next(new appError("already verified", 401));
 
   let token = jwt.sign(
     { _id: user._id, role: user.role },
@@ -159,11 +157,11 @@ export const authResendVerification = catchAsync(async (req, res) => {
   res.status(200).json({ message: "resent successfully" });
 });
 
-export const authForgotPassword = catchAsync(async (req, res) => {
+export const authForgotPassword = catchAsync(async (req, res, next) => {
   const { email } = req.body;
 
   const user = await userModel.findOne({ email });
-  if (!user) return res.status(401).json({ message: "user not found" });
+  if (!user) return next(new appError("user not found", 401));
 
   let token = jwt.sign(
     { _id: user._id, role: user.role },
@@ -182,23 +180,23 @@ export const authForgotPassword = catchAsync(async (req, res) => {
   return res.status(200).json({ message: "reset link sent successully" });
 });
 
-export const authResetPassword = catchAsync(async (req, res) => {
+export const authResetPassword = catchAsync(async (req, res, next) => {
   const { token } = req.params;
   const { password, confirmPassword } = req.body;
 
   if (password !== confirmPassword) {
-    return res.json({ message: "passwrods are not matched" });
+    return next(new appError("passwords are not matched", 400));
   }
   let decoded;
   try {
     decoded = jwt.verify(token, env.JWT_RESET_PASSWORD_SECRET);
   } catch (err) {
-    return res.status(400).json({ message: " tokenexpired " });
+    return next(new appError("token expired", 400));
   }
 
   const user = await userModel.findById(decoded._id);
   if (!user) {
-    return res.status(404).json({ message: "user not found" });
+    return next(new appError("user not found", 404));
   }
 
   let hashed = await bcrypt.hash(password, 12);
@@ -209,17 +207,17 @@ export const authResetPassword = catchAsync(async (req, res) => {
   res.status(200).json({ message: "password updated correctly" });
 });
 
-export const authSignUpAdmin = catchAsync(async (req, res) => {
+export const authSignUpAdmin = catchAsync(async (req, res, next) => {
   const { name, email, password, confirmPassword, phone } = req.body;
 
   const existUser = await userModel.findOne({ email });
 
   if (existUser) {
-    return res.status(409).json({ message: "email already exist" });
+    return next(new appError("email already exist", 409));
   }
 
   if (password !== confirmPassword) {
-    return res.status(400).json({ message: "passwords are not matched" });
+    return next(new appError("passwords are not matched", 400));
   }
 
   const hashed = await bcrypt.hash(password, 12);
