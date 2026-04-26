@@ -210,6 +210,13 @@ export const authResetPassword = catchAsync(async (req, res, next) => {
 export const authSignUpAdmin = catchAsync(async (req, res, next) => {
   const { name, email, password, confirmPassword, phone } = req.body;
 
+ if (!name) return next(new appError("name is required", 400));
+ if (!email) return next(new appError("email is required", 400));
+ if (!password) return next(new appError("password is required", 400));
+ if (!confirmPassword)
+   return next(new appError("confirm password is required", 400));
+ if (!phone) return next(new appError("phone is required", 400));
+
   const existUser = await userModel.findOne({ email });
 
   if (existUser) {
