@@ -11,6 +11,14 @@ This project combines three main domains in one backend system:
 The repository currently contains modules for auth, users, categories, subcategories, products, cart, orders, staff, attendance, deductions, salary, and socket setup, and the project uses `bcrypt`, `cloudinary`, `dotenv`, `express`, `joi`, `jsonwebtoken`, `mongoose`, `multer`, `nodemailer`, and `socket.io`. 
 
 ---
+---
+## 📚 API Documentation
+
+The full API documentation (including all endpoints, request examples, and responses) is available on Postman:
+
+👉 [https://documenter.getpostman.com/view/52446600/2sBXwqrqek](https://7inpg6z07z.apidog.io/)
+
+You can use this documentation to explore and test all available API routes.
 
 ## Project Overview
 
